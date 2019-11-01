@@ -1,0 +1,206 @@
+/*10. Implement pol;ynomial using CLL
+and perform:
+1) addition of polynomials
+2) multiplication of polynomials, and
+3) evaluation of polynomial
+*/
+#include <stdio.h>
+#include <math.h>
+#include <malloc.h>
+struct  node
+{
+	int exp,coef;
+	struct node *next;
+};
+struct node *insert(struct node *headnd,int e,int c);
+struct node *createpoly();
+struct node * mult(struct node *p1,struct node *p2);
+struct node * add(struct node *p1,struct node *p2);
+int evaluate(struct node *headnd,int x);
+void printpoly( struct node *headnd);
+int menu();
+int main()
+{
+	struct node *p1,*p2,*p3;
+	p1=p2=p3=NULL;
+	int choice,x,ans;
+	while(1)
+	{
+		choice=menu();
+		switch (choice)
+		{
+			case 1:	printf("\nEnter first polynomial\n");
+				p1=createpoly();
+				printf("\nEnter second polynomial\t");
+				p2=createpoly();
+				printf("\nFirst polynomial is \n\t");
+				printpoly(p1);
+				printf("\nSecond polynomial is \n\t");
+				printpoly(p2);
+				break;
+			case 2:	printf("\nFirst polynomial is \n\t");
+				printpoly(p1);
+				printf("\nEnter the value of X:");
+				scanf("%d",&x);
+				ans=evaluate(p1,x);
+				printf("\nEvaluated value = %d",ans);
+				break;
+			case 3: printf("\nFirst polynomial is \n\t");
+				printpoly(p1);
+				printf("\nSecond polynomial is \n\t");
+				printpoly(p2);
+				p3=add(p1,p2);
+				printf("\nAddition of these polynomials is\n");
+				printpoly(p3);
+				break;
+			case 4: printf("\nFirst polynomial is \n\t");
+				printpoly(p1);
+				printf("\nSecond polynomial is \n\t");
+				printpoly(p2);
+				p3=mult(p1,p2);
+				printf("\nMultiplication of these polynomials is\n");
+				printpoly(p3);
+				break;
+			case 5:	printf("\nProgram getting over..");
+			 
+			default:printf("\nWrong choice...");
+		}//switch
+	}//while
+}//main
+
+struct node *insert(struct node *headnd,int e,int c)
+{
+	struct node *newnd,*current;
+	/*terms are stored in decreasing  order of exp*/
+	/*For inserting a term, a node is created and its
+	  correct place of insertion is found
+	  If a term with same exp is found,new node is not created and
+	  coefficients are added */
+	newnd=(struct node*) malloc(sizeof(struct node));
+	newnd->exp=e;
+	newnd->coef=c;
+	newnd->next=NULL;
+	if(headnd==NULL) //Empty linked list
+	{   	headnd=newnd;
+		headnd->next=headnd;
+		return(headnd);
+	}
+	if(e<headnd->exp)//lowest exp,insert at the end
+	{
+		newnd->next=headnd->next;
+		headnd->next=newnd;
+		headnd=newnd;
+		return(headnd);
+	}
+	if(e==headnd->exp) //add coefficients
+	{
+		headnd->coef+=c;
+		return(headnd);
+	}
+	for(current=headnd;current->next!=headnd;current=current->next)
+	{
+		if(e>current->next->exp)
+			break;        //locate the postion for insertion
+	}
+	if(newnd->exp==current->exp)
+		current->coef+=c;
+	else
+	{
+		newnd->next=current->next;
+		current->next=newnd;
+	}
+	return(headnd);
+}//insert
+
+struct node *createpoly()
+{
+	int n,i,e,c;
+	struct node *head=NULL;
+	printf("\nHow many terms:");
+	scanf("%d",&n);
+	for(i=0;i<n;i++)
+	   {
+		printf("\n%d. enter a term (coefficient, exponent)\t : ",i+1);
+		scanf("%d%d",&c,&e);
+		head=insert(head,e,c);
+	   }
+       return(head);
+}//createpoly
+
+
+struct node * mult(struct node *p1,struct node *p2)
+{
+	struct node *current1,*current2;
+	struct node *headnd=NULL;
+	current1=p1->next;
+	do     //copy first polynomial as it is
+	{
+		current2=p2->next;
+		do
+		{
+			headnd=insert(headnd,current1->exp+current2->exp,(current1->coef) * (current2->coef));
+			current2=current2->next;
+		 }while(current2!=p2->next);
+		current1=current1->next;
+	}while(current1!=p1->next);
+	return(headnd);
+}
+
+struct node * add(struct node *p1,struct node *p2)
+{
+	struct node *current;
+	struct node *headnd=NULL;
+	int exp,coeff;
+	current=p1->next;
+	do     //copy first polynomial as it is
+	   {
+		headnd=insert(headnd,current->exp,current->coef);
+		current=current->next;
+	   } while(current!=p1->next);
+	current=p2->next;
+	do  //insert the second polynomial
+	{
+		headnd=insert(headnd,current->exp,current->coef);
+		current=current->next;
+	 }while(current!=p2->next);
+	return(headnd);
+}
+
+int evaluate(struct node *headnd,int x)
+ {
+	int sum=0;
+	struct node *current;
+	current=headnd->next;
+	do
+	{
+		sum+=current->coef * pow(x,current->exp);
+		current=current->next;
+	}while(current!=headnd->next);
+	return sum;
+}
+void printpoly( struct node *headnd)
+{
+	struct node *current;
+	current=headnd->next;
+	do
+	{
+		printf("%dx^%d ",current->coef,current->exp);
+		if(current!=headnd)
+			printf(" + ");
+		current=current->next;
+	}while(current!=headnd->next);
+}//printpoly
+
+int menu()
+{
+	int choice;
+	printf("\n*****Menu driven program**********");
+	printf("\n1->Read polynomials");
+	printf("\n2->Evaluation of first polynomial");
+	printf("\n3->Addition of 2 polynomials");
+	printf("\n4->Multiplication of 2 polynomials");
+	printf("\n5->Exit");
+	printf("\n\t\tEnter your choice\t");
+	scanf("%d",&choice);
+	return choice;
+}//menu

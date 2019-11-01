@@ -1,0 +1,189 @@
+/******************************************************************************
+ *
+ Implement marge sort to sort  the given list of number .Display
+ 
+corresponding list in each pass(with and without recursion)
+
+*******************************************************************************/
+
+#include <stdio.h>
+
+void mergeSort(int [], int, int, int);
+
+void miartition(int [],int, int);
+
+int main()
+
+{
+ 
+ 	 int list[50];
+ 
+ 	 int i, size;
+  
+	 printf("Enter total number of elements:");
+   
+	 scanf("%d", &size);
+  
+	 printf("Enter the elements:\n");
+   
+	 for(i = 0; i < size; i++)
+ 
+	 {
+
+      
+		scanf("%d", &list[i]);
+
+   
+	  }  
+
+ 
+         miartition(list, 0, size - 1);
+
+
+         printf("After merge sort:\n");
+
+   
+	 for(i = 0;i < size; i++)
+
+	{
+
+      
+		 printf("%d   ",list[i]);
+
+  
+   	}   
+
+
+    return 0;
+  
+ 
+ }
+
+  
+void miartition(int list[],int low,int high)
+ 	   
+{
+   
+	   int mid;
+     
+	if(low < high)
+
+    
+	{
+
+        
+		  mid = (low + high) / 2;
+
+   
+	          miartition(list, low, mid);
+
+          
+		  miartition(list, mid + 1, high);
+
+          
+		  mergeSort(list, low, mid, high);
+
+      
+         }
+
+    
+
+}
+
+void mergeSort(int list[],int low,int mid,int high)
+      
+{
+        
+	int i, mi, k, lo, temmi[50];
+
+         lo = low;
+
+         i = low;
+ 
+        mi = mid + 1;
+   
+     while ((lo <= mid) && (mi <= high))
+
+    
+	{
+
+        
+		if (list[lo] <= list[mi])
+
+          
+		{
+            
+			temmi[i] = list[lo];
+            
+			lo++;
+          
+		}
+
+        
+		else
+
+          
+		{
+            
+			temmi[i] = list[mi];
+            
+			mi++;
+          
+		}
+
+          
+		i++;
+
+   
+	 }
+
+       
+	if (lo > mid)
+
+         
+	{
+
+           
+		for (k = mi; k <= high; k++)
+               
+		{
+                 
+			temmi[i] = list[k];
+                 
+			i++;
+               
+		}
+
+         
+	}
+
+       
+	else
+
+         
+	{
+           
+		for (k = lo; k <= mid; k++)
+             
+		{
+              
+			temmi[i] = list[k];
+              
+			i++;
+             
+		}
+
+         
+	}
+
+      
+	for (k = low; k <= high; k++)
+        
+	{
+          
+		list[k] = temmi[k];
+        
+	}
+
+
+}

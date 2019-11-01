@@ -1,0 +1,198 @@
+/* Implement following Matrix operations:
+a. addition with pointers to arrays,
+b. multiplication without pointers to arrays,
+c. transpose with pointers to arrays,
+*/
+#include<stdio.h>
+#include<stdlib.h>
+#define MAX 10
+int menu();
+void create(int [] [MAX], int  ,int );
+int **createP(int  ,int );
+void display(int [][MAX],int  ,int );
+void displayP(int **,int  ,int );
+void transpose(int **,int  ,int );
+int ** add(int **,int ,int  ,int **);
+void mul(int [][MAX],int ,int  ,int [][MAX],int ,int,int [][MAX] );
+
+int main()
+{
+	int m1[MAX][MAX],m2[MAX][MAX],m3[MAX][MAX],r1,c1,r2,c2,choice;
+	int **mm1,**mm2,**mm3;
+	
+	while(1)
+	{
+	choice=menu();
+	switch(choice)
+	{
+		case 1: printf("\n First matrix :How many rows and columns?\t");
+			scanf("%d%d",&r1,&c1);
+			mm1=createP(r1,c1);
+			printf("\n Second matrix :How many rows and columns?\t");
+			scanf("%d%d",&r2,&c2);
+			mm2=createP(r2,c2);
+			if(r1==r2 && c1==c2)
+			{
+				mm3=add(mm1,r1,c1,mm2);
+				printf("\nResult=\n");
+				displayP(mm3,r1,c1);
+			}
+			else
+				printf("\n Can not be added...");
+			break;
+		case 2: printf("\n First matrix :How many rows and columns?\t");
+			scanf("%d%d",&r1,&c1);
+			create(m1,r1,c1);
+			printf("\n Second matrix :How many rows and columns?\t");
+			scanf("%d%d",&r2,&c2);
+			create(m2,r2,c2);
+			if(c1==r2)
+			{
+				mul(m1,r1,c1,m2,r2,c2,m3);
+				printf("\nResult=\n");
+				display(m3,r1,c2);
+			}
+			else
+				printf("\n Can not multiply...");
+			break;
+		case 3: printf("\n How many rows and columns?\t");
+			scanf("%d%d",&r1,&c1);
+			mm1=createP(r1,c1);
+			if(r1==c1)
+			{
+				transpose(mm1,r1,c1);
+				printf("\nResult=\n");
+				displayP(mm1,r1,c1);
+			}
+			else
+				printf("\n Not a square matrix :");
+			break;
+		case 4: printf("\nProgram ending...");
+			
+			exit(0);
+	    default:	printf("\n You entered wrong Choice");
+	}//switch
+      }//while
+}//main
+void create(int m[ ] [MAX],int r ,int c)
+{
+	int i,j;
+	printf("\n Enter data row by row\n");
+	for(i=0;i<r;i++)
+	{
+		printf("\n\tRow number %d\n",i);
+		for(j=0;j<c;j++)
+		{
+			scanf("%d",&m[i][j]);
+		}
+	}
+}//create
+
+int **createP(int r ,int c)
+{
+	int i,j,**m;
+	// creating 2-d array
+	m=(int**)malloc(r*sizeof(int *));
+	for(i=0;i<r;i++)
+	{
+		*(m+i)=(int*)malloc(c*sizeof(int ));
+	}
+	printf("\n Enter data row by row\n");
+	for(i=0;i<r;i++)
+	{
+		printf("\n\tRow number %d\n",i);
+		for(j=0;j<c;j++)
+		{
+			scanf("%d",(*(m+i)+j));
+		}//i for
+	}// o for
+	return m;
+}//create
+void display(int m[][MAX],int r ,int c)
+{
+	int i,j;
+	for(i=0;i<r;i++)
+	{
+		for(j=0;j<c;j++)
+		{
+			printf("\t%d",m[i][j]);
+		}//inner for
+		printf("\n");
+	}//for
+}//display
+void displayP(int **m,int r ,int c)
+{
+	int i,j;
+	for(i=0;i<r;i++)
+	{
+		for(j=0;j<c;j++)
+		{
+			printf("\t%d",*(*(m+i)+j));
+		}//inner for
+		printf("\n");
+	}//for
+}//display
+
+
+void transpose(int **m,int r ,int c)
+{
+	int i,j,temp;
+	for(i=0;i<r;i++)
+	{
+		for(j=0;j<c;j++)
+		{
+			if(i<j)
+			{
+				temp=*(*(m+i)+j);
+				*(*(m+i)+j)=*(*(m+j)+i);
+				*(*(m+j)+i)=temp;
+			}//if
+		}//for
+	 }//o.for
+}
+int ** add(int **mm1,int r1,int c1 ,int **mm2)
+{
+	  int i,j;
+	  int **mm3;
+	// creating resultant matrix using pointers
+	mm3=(int**)malloc(r1*sizeof(int *));
+	for(i=0;i<r1;i++)
+	{
+		*(mm3+i)=(int*)malloc(c1*sizeof(int ));
+	}
+	for(i=0;i<r1;i++)
+	{
+		for(j=0;j<c1;j++)
+		{
+			*(*(mm3+i)+j)=*(*(mm1+i)+j)+*(*(mm2+i)+j);
+		}//i.for
+	}//o.for
+	return mm3;
+}//add
+
+void mul(int m1[][MAX],int r1,int c1 ,int m2[][MAX],int r2,int c2,int m3[][MAX])
+{
+	int i,j,k,sum;
+		for(i=0;i<r1;i++)
+		{
+			for(j=0;j<c2;j++)
+			{
+				for(k=0,sum=0;k<c1;k++)
+				{
+				       sum+=m1[i][k] * m2[k][j];
+				}//for
+				       m3[i][j]=sum;
+			}
+		}
+}//mul
+int menu()
+{
+	int choice;
+	printf("\n1-->Add two matrices");
+	printf("\n2-->Multiply two matrices");
+	printf("\n3-->Transpose of the 1st Matrix");
+	printf("\n4-->Exit");
+	printf("\nEnter Your Choice : ");
+	scanf("%d",&choice);
+	return choice;
+}//menu

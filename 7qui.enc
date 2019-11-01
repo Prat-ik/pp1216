@@ -1,0 +1,73 @@
+/*7. Implement Quick Sort recursively to sort the given list of numbers/records.
+Display pivot position and its corresponding list in each pass.
+	(56, - 90, 80, 78, 234, 654, 432, 12, 0, -11)
+*/
+#include<stdio.h>
+
+int partition(int a[], int lb, int ub)
+{
+	int up,down,temp,pivot,i;
+	pivot=a[lb];
+	down=lb+1;
+	up=ub;
+	printf("\n\nBefore...Pos =%d\tVal=%d ",lb,a[lb]);
+	for (i=lb; i<=ub;i++)
+		printf(" %d",a[i]);
+	do
+	{
+		//increment down pointer
+		while((a[down]<pivot)&&(down<=ub))
+			down++;
+		while((a[up]>pivot) && (up>lb))
+			up--;
+		if(down<up)		//condition 3 checked
+		{
+			temp=a[up] ;	//swapping
+			a[up]=a[down];
+			a[down]=temp;
+		}
+	}while(down<up);
+	//now interchange a[lb] i.e. pivot and a[up]
+		temp=a[lb];
+		a[lb]=a[up];
+		a[up]=temp;
+	// up is now the position of pivot
+	printf("\nAfter...Pos =%d\tVal=%d ",up,a[up]);
+	for (i=lb; i<=ub;i++)
+		printf(" %d",a[i]);
+	return up;
+}
+void quicksort(int a[],int lb, int ub)
+{
+int j;
+	if(lb<ub)
+	{
+		j=partition(a,lb,ub);
+		// j is position of pivot
+		// its left sub-array begins at lb and ends at j-1
+		// its right sub-array begins at j+1 and ends at ub
+		quicksort(a,lb,j-1);
+		quicksort(a,j+1,ub);
+	}
+}
+void display(int a[], int n)
+{
+	int i;
+	for (i=0; i<n;i++)
+		printf("\t%d",a[i]);
+}
+void main()
+{
+	int a[20],i,n,lb,ub;
+	
+	printf("\n How many elements ");
+	scanf("%d",&n);
+	printf("\n Now enter %d values\n",n);
+	for(i=0;i<n;i++)
+		scanf("%d",&a[i]);
+	quicksort(a,0,n-1);
+	//print contents of sorted array
+	printf("\nThe sorted array is\n");
+	display(a,n);
+	
+}//main

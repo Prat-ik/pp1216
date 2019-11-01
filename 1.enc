@@ -1,0 +1,242 @@
+/*
+ ================================================================
+Implement   set   operations   using   arrays   and   
+perform   union,   intersection,   difference, symmetric difference.
+ ================================================================
+ */
+
+#include<stdio.h>
+
+void display(int [], int );
+int accept(int[]);
+int union1(int[], int[],int[], int, int);
+int intr(int[], int[],int[], int, int);
+int diff(int[], int[],int[], int, int);
+int symdiff(int[], int[],int[], int, int);
+int univ[10]={0,1,2,3,4,5,6,7,8,9};
+int main()
+{
+	int set1[10],set2[10],set3[20],ch;
+	int i,k=0,l1,l2;
+
+	printf("The values of universal set: \n\t { ");
+		for(i=1;i<10;i++)
+		{
+		  printf("%d, ",univ[i]);
+		}
+	printf(" }\n\n\t THE VALUES THAT YOU ENTER SHOULD BE FROM UNIVERSAL SET\n\t");
+
+	do
+	{
+	printf("\n\t......MENU......\n\t");
+	printf("\t1.Union\n\t\t2.Intersection\n\t\t3.Difference\n\t\t4.Symmetric Difference\n\t\t5.Exit");
+	printf("\n Enter your choice");
+	scanf("%d",&ch);
+	switch(ch)
+	{
+	 case 1:
+
+			printf("\n\t Set 1 :");
+			l1=accept(set1);
+			printf("\n\t Set 2 :");
+			l2=accept(set2);
+	  k=union1(set1,set2,set3,l1,l2);
+	   printf("\n\t Union :: ");
+	   printf("\n\t Set 1 :: {");
+	   display(set1,l1);
+
+	   printf("\n\t Set 2 ::  {");
+	   display(set2,l2);
+	   printf("\n\t union set  ::  {");
+	   display(set3,k);
+	   break;
+
+	  case 2:
+		  	  printf("\n\t Set 1 :");
+		  	  l1=accept(set1);
+		  	  printf("\n\t Set 2 :");
+		  	  l2=accept(set2);
+	   k=intr(set1,set2,set3,l1,l2);
+	   printf("\n\t  Intersection :: ");
+	   printf("\n\t Set 1 :: {");
+	   display(set1,l1);
+
+	   printf("\n\t Set 2 ::  {");
+	   display(set2,l2);
+	   printf("\n\t Intersection set  ::  {");
+	   display(set3,k);
+	   break;
+
+	  case 3 :
+
+		  	  	printf("\n\t Set 1 :");
+		  		l1=accept(set1);
+		  		printf("\n\t Set 2 :");
+		  		l2=accept(set2);
+	   k=diff(set2,set1,set3,l1,l2);
+	   printf("\n\t  Difference :: ");
+	   printf("\n\t Set 1 :: {");
+	   display(set1,l1);
+
+	   printf("\n\t Set 2 ::  {");
+	   display(set2,l2);
+	   printf("\n\t Difference set  ::  {");
+	   display(set3,k);
+	   break;
+
+	  case 4:
+		  	  	 printf("\n\t Set 1 :");
+		  		 l1=accept(set1);
+		  		 printf("\n\t Set 2 :");
+		  		 l2=accept(set2);
+
+		  		printf("\n\t Set 1 :: {");
+		  		display(set1,l1);
+		  		printf("\n\t Set 2 ::  {");
+		  		display(set2,l2);
+
+		  		k=diff(set2,set1,set3,l1,l2);
+		  		printf("\n\t Symmetric Difference set  ::  {");
+		  		for(i=0;i<k;i++)
+		  		{
+		  			printf(" %d ",set3[i]);
+		  		}
+
+		  		k=diff(set1,set2,set3,l1,l2);
+		  		for(i=0;i<k;i++)
+		  		{
+		  			printf(" %d ",set3[i]);
+		  		}
+		  		printf("}");
+	   break;
+	 	}
+	   printf("\n\t Do you wish to continue :\n\t 1.Yes\t 2.No");
+	   scanf("%d", &ch);
+	}while(ch!=5);
+
+return 0;
+}
+
+void display(int set[], int l)
+{
+  int i;
+	for(i=0;i<l;i++)
+	   printf(" %d ",set[i]);
+	   printf(" } ");
+}
+
+int accept(int set[])
+{
+	 int i,no,j,flag,l1, flag1;
+
+	 do
+		 {
+		 printf("\n\t Enter the limit of set 1 ::  ");
+		 scanf("%d",&l1);
+		 if(l1<=0 || l1>10)
+			printf("\n\t Invalid limit \n\t Please ");
+
+		 }while(l1<=0 || l1>10);
+
+	 printf(" Enter the elements in set:");
+
+	for( i=0;i<l1;i++)
+	  {
+		  printf("\n\t Element[%d] ::",i);
+		 scanf("%d",&no);
+		 flag=0;
+		 for(j=0;j<10;j++)
+		 {
+			 if(univ[j]==no)
+			 {
+				 flag=1;
+				 break;
+			 }
+		 }
+		 if(flag==1)
+		 {	 set[i]=no;
+			 flag1=0;
+			 for(j=0;j<i;j++)
+			 {
+				 if(set[j]==set[i])
+				 {
+					 flag1=1;
+					 break;
+				 }
+			 }
+
+				 if(flag1==1)
+				 {
+					 printf("\n\t Enter another number as it is repeated");
+					 i--;
+				 }
+			 }
+
+		 else
+		 {
+			 printf("\n\t Enter another as it is not from universal set");
+			 i--;
+		 }
+	  }
+	return l1;
+ }
+
+int union1(int set1[], int set2[], int set3[], int l1, int l2)
+{
+	   int i,k=0,j;
+
+	   for(i=0;i<l1;i++)   // copy set1 as it is to set3
+	   set3[k++]=set1[i];
+	for(i=0;i<l2;i++) // to take one one element from set 2
+	   {
+	 for(j=0;j<l1;j++)   // to compare all elements of set1 with ith element of set2
+		{
+		 if(set2[i]==set1[j])
+		 break;
+		 }
+	  if(j==l1)
+		{ set3[k++]=set2[i];}
+	  }
+	  return k;
+}
+
+int intr(int set1[], int set2[], int set3[], int l1, int l2)
+	{
+	   int i,k=0,j;
+
+		for(i=0;i<l2;i++) // to take one one element from set 2
+		{
+		 for(j=0;j<l1;j++) // to compare all elements of set1 with ith element of set2
+			{
+			  if(set1[i]==set2[j])
+			   {
+				  set3[k++]=set1[i];
+			   }
+			 }
+		}
+  return k;
+ }
+
+int diff(int set1[], int set2[], int set3[], int l1, int l2)
+	{
+	   int i,k=0,j,flag;
+
+	for(i=0;i<l2;i++)
+	{
+		flag=1;
+		for(j=0;j<l1;j++)
+		{
+			if(set2[i]==set1[j])
+			{
+				flag=0;
+				break;
+			}
+		}
+		if(flag)
+		{
+			set3[k]=set2[i];
+			k++;
+		}
+	}
+  return k;
+  }

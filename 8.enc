@@ -1,0 +1,143 @@
+ /*8. Represent sparse matrix using 2-d array or structure
+and perform simple ans fast transpose*/
+#include<stdio.h>
+
+
+#define MAX 10
+int menu();
+void readsm(int s[][3]);
+void displaysm(int s[MAX][3]);
+void stranspose(int s1[][3], int s2[][3]);
+void ftranspose(int s1[][3], int s2[][3]);
+int main()
+{
+	int s1[MAX][3],s2[MAX][3],s3[MAX][3],choice;
+	
+	while(1)
+	{
+	choice=menu();
+	switch(choice)
+	{
+		case 1: printf("\nReading sparse natrix...");
+			readsm(s1);
+			printf("\nThe entered sparse matrix is \n");
+			displaysm(s1);
+			stranspose(s1,s2);
+			printf("\nIts simple transpose is \n");
+			displaysm(s2);
+			break;
+		case 2: printf("\nReading sparse natrix...");
+			readsm(s1);
+			printf("\nThe entered sparse matrix is \n");
+			displaysm(s1);
+			ftranspose(s1,s2);
+			printf("\nIts simple transpose is \n");
+			displaysm(s2);
+			break;
+		case 3: printf("\nProgram ending...");
+			
+		default:printf("\n You entered wrong Choice:");
+	}//switch
+    }//while
+}//main
+
+void readsm(int s[][3])
+{
+	int r,c,k,i;
+	printf("\nEnter first row\t");
+	scanf("%d%d%d",&r,&c,&k);
+	printf("\nSo, there are %d non-zero elements",k);
+	s[0][0]=r;
+	s[0][1]=c;
+	s[0][2]=k;
+	for(i=1;i<=k;i++)
+	{
+		printf("\nEnter the next triple (row,column, value)\n");
+		scanf("%d%d%d",&s[i][0],&s[i][1],&s[i][2]);
+	}//for
+}//readnm
+void displaysm(int s[MAX][3])
+{
+	int i,k,j;
+	k=s[0][2];
+	for(i=0;i<=k;i++)
+	{
+		for(j=0;j<3;j++)
+		{
+			printf("%d\t",s[i][j]);
+		}//i.for
+		printf("\n");
+	}//o.for
+}//displaysm
+void stranspose(int s1[][3], int s2[][3])
+{
+	int n,i,k,r,c,tot;
+	s2[0][1]=s1[0][0];
+	s2[0][0]=s1[0][1];
+	s2[0][2]=s1[0][2];
+	//Number of columns
+	c=s1[0][1];
+	tot=s1[0][2];
+	for(n=0,k=1;n<c;n++)		// no. of columns
+	{
+		for(i=1;i<=tot;i++)	// no. of elements
+		{
+			if(s1[i][1]==n)	// got the ith column element in jth row . insert it in s2
+			{
+				s2[k][0]=s1[i][1];	// column no becomes row no.
+				s2[k][1]=s1[i][0];
+				s2[k][2]=s1[i][2];
+				k++;
+			}//if
+		}//i.for
+	}//o.for
+}//stranspose
+void ftranspose(int s1[][3], int s2[][3])
+{
+	int i,j,k,tot,total[MAX]={0},index[MAX],rowno,c;
+	// first copy the first row. Interchange content of
+	// 0th and 1st column
+	s2[0][1]=s1[0][0];
+	s2[0][0]=s1[0][1];
+	s2[0][2]=s1[0][2];
+	// number of columns of 2-d
+	c=s1[0][1];
+	// total number of non-zero elements of 2-d
+	tot=s1[0][2];
+	// counting number of elements in each column of s1
+	// creating array "total"
+	for(i=1;i<=tot;i++)
+	{
+		j=s1[i][1];
+		total[j]++;
+	}
+	// creating array "index"
+	index[0]=1;
+	for(i=1;i<c;i++)
+	{
+		index[i]=index[i-1]+total[i-1];
+	}//for
+	// now copy from s1 to s2
+
+	for(i=1;i<=tot;i++)
+	{
+		k=s1[i][1]; // column number in s1 is now row number in s2
+		// get row number for this element from array index
+		rowno=index[k];
+		s2[rowno][0]=s1[i][1];
+		s2[rowno][1]=s1[i][0];
+		s2[rowno][2]=s1[i][2];
+		index[k]++;
+	}//for
+}//ftranspose
+
+int menu()
+{
+	int choice;
+	printf("\n1-->Simple Transpose");
+	printf("\n2-->Fast Transpose");
+	printf("\n3-->Exit");
+	printf("\nEnter Your Choice ");
+	scanf("%d",&choice);
+	return choice;
+}//menu

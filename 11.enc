@@ -1,0 +1,271 @@
+/*11. Implement any database using Doubly linked list with following options:
+1) Insert a record
+2) Delete a record
+3) Modify a record
+4) Display list in forward direction
+5) Display list in backward direction
+*/
+#include<stdio.h>
+#include<stdlib.h>
+struct node
+{
+int rollno;
+char name[40];
+int marks;
+struct node *prev,*next;
+};
+struct node * create();
+struct node *insert(struct node *headnd, int pos);
+struct node *delet(struct node *headnd,int pos);
+struct node *getnewnd();
+void display(struct node *headnd);
+void displayB(struct node *headnd);
+int countnodes(struct node *headnd);
+int menu();
+int lsearch(struct node *headnd,int target);
+void modify (struct node *headnd,int r);
+int main()
+{	int choice,target,i,pos,r;
+	struct node *headnd;
+	
+	while(1)
+	{
+		choice=menu();
+		switch(choice)
+		{
+			case 1: headnd=create();
+				break;
+			case 2: printf("\nEnter position where to be inserted\t");
+				scanf("%d",&pos);
+				headnd=insert(headnd,pos);
+				break;
+			case 3: printf("\nEnter position of node to be deleted\t");
+				scanf("%d",&pos);
+				headnd=delet(headnd,pos);
+				break;
+			case 4: printf("\nEnter rollno of the student whose data is to be modified\t");
+				scanf("%d",&r);
+				modify(headnd,r);
+				break;
+			case 5: display(headnd);
+				break;
+			case 6: displayB(headnd);
+				break;
+			case 7:	printf("\nEnd of program... Press any key...");
+				
+				return 0;
+			default:printf("\nEnter correct choice");
+		}//switch
+	}//while
+}//main
+struct node * create()
+{
+	int i,n,value;
+	struct node *headnd,*newnd,*tempnd;
+	headnd=NULL;
+	printf("\nHow many students you want to add to list?\t");
+	scanf("%d",&n);
+	printf("\nEnter data of these students now\n");
+	for(i=0;i<n;i++)
+	{
+		printf("\n\tStudent No. %d\n",i+1);
+		newnd=getnewnd();
+		if(headnd==NULL)
+			headnd=tempnd=newnd;
+		else
+		{
+			tempnd->next=newnd;
+			newnd->prev=tempnd;
+			tempnd=newnd;
+		}
+	  }//for
+	  return headnd;
+}//create
+struct node *getnewnd()
+{
+	struct node *newnd;
+	newnd=(struct node*)malloc(sizeof(struct node));
+	printf("\tRoll Number:\t");
+	scanf("%d",&newnd->rollno);
+	printf("\tName:\t");
+	//flushall();
+	          scanf("%s",newnd->name);
+//	gets(newnd->name);
+	printf("\tMarks:\t");
+	scanf("%d",&newnd->marks);
+	newnd->next=newnd->prev=NULL;
+	return newnd;
+}//getnewnd
+void display(struct node *headnd)
+{
+struct node *current;
+int i;
+printf("\n\nList in forwatd direction is\n");
+for(i=0,current=headnd;current!=NULL;current=current->next,i++)
+{
+	printf("\n\t%d\t%s\t%d",current->rollno,current->name,current->marks);//print all elements except the last
+}//for
+}//display
+void displayB(struct node *headnd)
+{
+struct node *current;
+int i;
+// First reach at the last node
+for(current=headnd;current->next!=NULL;current=current->next)
+{
+	;
+}
+printf("List in forwatd direction is\n");
+for(	;current!=NULL;current=current->prev)
+{
+	printf("\n\t%d\t%s\t%d",current->rollno,current->name,current->marks);
+}
+}//displayB
+int menu()
+{
+	int choice;
+	printf("\n1.Create list of records");
+	printf("\n2.Insert a record");
+	printf("\n3.Delete a record");
+	printf("\n4.Modify a record");
+	printf("\n5.Display list in forward direction");
+	printf("\n6.Display list in backward direction");
+	printf("\n7.EXIT ");
+	printf("\n\t\tENTER YOUR CHOICE  (1 - 4)");
+	scanf("%d",&choice);
+	return choice;
+}
+void modify (struct node *headnd,int r)
+{
+	int i;
+	struct node *current;
+	for(current=headnd;current!=NULL;current=current->next)
+	{
+		if(current->rollno==r)
+			break;
+	}//for
+	if(current==NULL)
+		printf("\nNo such record....");
+	else
+	{
+		printf("\nFollowing is the data of this student....");
+		printf("\n\t%d\t%s\t%d",current->rollno,current->name,current->marks);
+		printf("\nEnter modified data now\n");
+		printf("\tRoll Number:\t");
+		scanf("%d",&current->rollno);
+		printf("\tName:\t");
+		//flushall();
+		scanf("%s",current->name);
+//		gets(current->name);
+		printf("\tMarks:\t");
+		scanf("%d",&current->marks);
+	}//else
+}//modify
+int lsearch(struct node *headnd,int target)
+{
+	int i;
+	struct node *current;
+		for(current=headnd,i=0;current!=NULL;current=current->next,i++)
+		{
+			if(current->rollno==target)
+				return i;
+		}//for
+		return -1;
+}//find
+int countnodes(struct node *headnd)
+{
+	struct node *current;
+	int n;
+	for(n=0,current=headnd;current!=NULL; current=current->next)
+	{
+			n++;
+	}
+return n;
+}
+
+struct node *insert(struct node *headnd, int pos)
+{
+	int i,x,n;
+	struct node *current,*newnd;
+	// first count how many nodes are there
+	n=countnodes(headnd);
+	if(pos>n||pos<0)
+	{
+		printf("\n Sorry, wrong position...");
+		return headnd;
+	}
+	newnd=getnewnd();
+	if(pos==0)	//add node at the beginning
+	{
+		newnd->next=headnd;
+		headnd->prev=newnd;
+		headnd=newnd;
+		newnd->prev=NULL;
+		return headnd;
+	}
+	//add node in between or end
+	if(pos==n)		//add node at the end
+	{
+		//Let current points to last node
+		for(current=headnd;current->next!=NULL;current=current->next)
+		{
+			;
+		}//for
+		current->next=newnd;
+		newnd->prev=current;
+	}//if
+	else   	//add node in between
+	{
+	 //Let current points to node at position=pos
+		for(current=headnd,i=0;i<pos;i++)
+		{
+			current=current->next;
+		}//for
+		newnd->next=current;
+		newnd->prev=current->prev;
+		current->prev->next=newnd;
+		current->prev=newnd;
+	}//else
+	return headnd;
+}//insert
+struct node *delet(struct node *headnd,int pos)
+{
+	int i,n;
+	struct node *current,*tempnd;
+	// first count how many nodes are there
+	n=countnodes(headnd);
+	// check whether specified position is valid or not
+	if(pos>=n||pos<0)
+	{
+		printf("\n Sorry, wrong position....");
+		return headnd;
+	}
+	//delete starting node
+	if(pos==0)
+	{
+		headnd=headnd->next;
+		free(headnd->prev);
+		headnd->prev=NULL;
+		return headnd;
+	}
+	//delete node in between or end
+	//move current to pos position
+	for(current=headnd,i=0;i<pos;i++)
+	{
+		current=current->next;
+	}
+//delete node at the end
+	if(pos==n-1)
+	{
+		current->prev->next=NULL;
+		free(current);
+	}
+//delete the node which is in between
+	else
+	{
+		current->prev->next=current->next;
+		current->next->prev=current->prev;
+		free(current);
+	}
+	return headnd;
+}//delete

@@ -1,0 +1,228 @@
+/*9. Implement singly linked list with following options:
+a. insertion of a node at any location
+b. deletion of a node from any location
+c. Display a list
+d. Display in Reverse,
+e. Reverse the LL without using additional data structure.
+*/
+#include<stdio.h>
+#include<stdlib.h>
+struct node
+{
+int data;
+struct node *next;
+};
+struct node* create();
+void display(struct node *headnd);
+struct node *insert(struct node *headnd, int pos);
+struct node *delet(struct node *headnd,int pos);
+struct node* reverse(struct node* headnd);
+void displayr(struct node* headnd);
+int menu();
+
+int main()
+{
+int choice,pos;
+struct node *headnd=NULL;
+
+while(1)
+{
+	choice=menu();
+	switch(choice)
+	{
+		case 1:	headnd=create();
+			break;
+		case 2: printf("\nEnter position where to be inserted\t");
+			scanf("%d",&pos);
+			headnd=insert(headnd,pos);
+			break;
+		case 3: printf("\nEnter position of node to be deleted\t");
+			scanf("%d",&pos);
+			headnd=delet(headnd,pos);
+			break;
+		case 4:	display(headnd);
+			break;
+		case 5:	displayr(headnd);
+			break;
+		case 6:	headnd=reverse(headnd);
+			printf("\n LL is reversed !!");
+			break;
+		case 7: printf("\nProgram ending...");
+			
+			exit(0);
+		default:printf("\n You entered wrong Choice:");
+	}//switch20->NULL
+}//while
+}//main
+
+
+struct node* create()
+{
+	int i,n;
+	struct node *headnd=NULL,*newnd,*tempnd;
+	printf("\nHow many numbers???\t");
+	scanf("%d",&n);
+	printf("\nEnter these numbers now\n");
+	for(i=0;i<n;i++)
+	{
+		newnd=(struct node*)malloc(sizeof(struct node));
+		scanf("%d",&newnd->data);
+		newnd->next=NULL;
+		if(headnd==NULL)
+		{
+			headnd=newnd;
+			tempnd=newnd;
+		}
+		else
+		{
+			tempnd->next=newnd;
+			tempnd=tempnd->next;
+		}
+	}//for
+	return headnd;
+}//create
+
+void display(struct node *headnd)
+{
+struct node *current;
+for(current=headnd;current!=NULL;current=current->next)
+{
+	printf("%d->",current->data);
+}
+	printf("NULL");
+}//display
+
+
+
+int countnodes(struct node *headnd)
+{
+	struct node *current;
+	int n;
+	for(n=0,current=headnd;current!=NULL; current=current->next)
+	{
+			n++;
+	}
+return n;
+}
+//insert a node in LL
+
+struct node *insert(struct node *headnd, int pos)
+{
+	int i,x,n;
+	struct node *current,*newnd;
+	// first count how many nodes are there
+	n=countnodes(headnd);
+	if(pos>n||pos<0)
+	{
+		printf("\n Sorry, wrong position...");
+		return headnd;
+	}
+	printf("\nEnter the data you want to enter\t");
+	scanf("%d",&x);
+	newnd=(struct node *) malloc(sizeof(struct node));
+	newnd->data=x;
+	if(pos==0)	//add node at the beginning
+	{
+		newnd->next=headnd; //let new node be the first in the list
+		headnd=newnd;       //headnd points to new node
+		return headnd;
+	}
+	//add node in between or end
+	current=headnd;
+	for(i=0;i<pos-1;i++)	//move current to pos-1 position
+	{
+		current=current->next;
+	}
+	if(pos==n)		//add node at the end
+	{
+		newnd->next=NULL;    //new node is the last node now
+		current->next = newnd;		//link previous node to new node
+	}
+	else   	//add node in between
+	{
+		newnd->next = current->next;	// link new node to next node (i.e. node at position pos)
+		current->next = newnd;		//link previous node to new node
+	}
+	return headnd;
+}//insert
+
+
+struct node *delet(struct node *headnd,int pos)
+{
+	int i,n;
+	struct node *current,*tempnd;
+	// first count how many nodes are there
+	n=countnodes(headnd);
+	// check whether specified position is valid or not
+	if(pos>=n||pos<0)
+	{
+		printf("\n Sorry, wrong position....");
+		return headnd;
+	}
+	//delete starting node
+	if(pos==0)
+	{
+		printf("\nDeleted element is %d",headnd->data);
+		tempnd=headnd;
+		headnd=headnd->next;//let headnd point to next node
+		free(tempnd);
+		return headnd;
+	}
+//delete node in between or end
+	current=headnd;
+//move current to pos-1 position
+	for(i=0;i<pos-1;i++)
+	{
+		current=current->next;
+	}
+	printf("\nDeleted element is %d",current->next->data);
+	tempnd=current->next;
+//delete node at the end
+	if(pos==n-1)
+		current->next=NULL;
+//delete the node which is in between
+	else
+		current->next = current->next->next;
+	return headnd;
+}//delete
+struct node* reverse(struct node* headnd)
+{
+struct node *headnd1,*tempnd;
+headnd1=headnd;
+headnd=headnd->next;
+headnd1->next=NULL;
+while(headnd!=NULL)
+{
+	tempnd=headnd->next;
+	headnd->next=headnd1;
+	headnd1=headnd;
+	headnd=tempnd;
+}
+return headnd1;
+}
+
+
+void displayr(struct node* headnd)
+{
+if(headnd!=NULL)
+{
+	displayr(headnd->next);
+	printf("%d->",headnd->data);
+}//if
+}//displayr
+
+int menu()
+{
+	int choice;
+	printf("\n1 --> Create list");
+	printf("\n2 --> Insert a node");
+	printf("\n3 --> Delete a node");
+	printf("\n4 --> Display link list");
+	printf("\n5 --> Display reverse");
+	printf("\n6 --> Reverse the LL");
+	printf("\n7 --> Exit");
+	printf("\nEnter Your Choice : ");
+	scanf("%d",&choice);
+	return choice;
+}//menu
+
